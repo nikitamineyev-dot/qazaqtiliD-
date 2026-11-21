@@ -1,0 +1,150 @@
+<!doctype html>
+<html lang="ru">
+<head>
+<meta charset="utf-8"><meta name="viewport" content="width=device-width,initial-scale=1">
+<meta name="theme-color" content="#101114">
+<link rel="manifest" href="manifest.webmanifest">
+<link rel="icon" href="icon.svg" type="image/svg+xml">
+<meta name="apple-mobile-web-app-capable" content="yes">
+<meta name="apple-mobile-web-app-status-bar-style" content="black-translucent">
+<title>Qazaq — тренажёр языка</title>
+<style>
+:root{color-scheme:dark;--bg:#101114;--panel:#191b20;--panel2:#20232a;--line:#30343d;--text:#f3f4f6;--muted:#9ba2ae;--accent:#a78bfa;--green:#55d6a1;--red:#ff7777}
+*{box-sizing:border-box}body{margin:0;background:var(--bg);color:var(--text);font:15px/1.5 Inter,system-ui,-apple-system,Segoe UI,sans-serif}
+button,input,select{font:inherit}button{cursor:pointer;border:0} .app{max-width:1050px;margin:auto;padding:22px 18px 50px}
+header{display:flex;align-items:center;justify-content:space-between;gap:14px;margin-bottom:25px}.brand{display:flex;align-items:center;gap:11px;font-size:21px;font-weight:800;letter-spacing:.3px}.logo{width:38px;height:38px;border-radius:12px;background:linear-gradient(135deg,#a78bfa,#6d5ce7);display:grid;place-items:center;color:#111;font-weight:900}
+.pill{border:1px solid var(--line);color:var(--muted);padding:7px 11px;border-radius:30px;font-size:12px}
+.tabs{display:flex;gap:8px;flex-wrap:wrap;margin-bottom:20px}.tab{padding:10px 15px;border-radius:11px;background:transparent;color:var(--muted);border:1px solid var(--line)}.tab.active{background:var(--panel2);color:var(--text);border-color:#62558c}
+.grid{display:grid;grid-template-columns:minmax(0,1.55fr) minmax(250px,.8fr);gap:17px}.card{background:var(--panel);border:1px solid var(--line);border-radius:18px;padding:21px}
+.card h2{font-size:17px;margin:0 0 16px}.muted{color:var(--muted)}.topline{display:flex;justify-content:space-between;align-items:center;gap:12px;color:var(--muted);font-size:13px}.bar{height:7px;background:#30333b;border-radius:20px;overflow:hidden;margin:12px 0 28px}.bar span{display:block;height:100%;width:0;background:var(--accent);transition:width .25s}
+.word{text-align:center;padding:20px 5px 24px}.word .main{font-size:clamp(34px,6vw,49px);font-weight:800;letter-spacing:.2px}.word .hint{color:var(--muted);margin-top:7px}
+.answers{display:grid;grid-template-columns:1fr 1fr;gap:10px}.answer{padding:15px;text-align:left;background:var(--panel2);border:1px solid var(--line);border-radius:12px;color:var(--text);min-height:58px;transition:.15s}.answer:hover{border-color:#8372bc}.answer.chosen{border:1px solid var(--accent);background:#29243a}.answer.correct{border-color:var(--green);background:#183329}.answer.wrong{border-color:var(--red);background:#3a2226}
+.action{margin-top:17px;width:100%;padding:13px;border-radius:12px;background:var(--accent);color:#17131f;font-weight:800}.action:disabled{opacity:.35;cursor:not-allowed}.secondary{padding:9px 12px;border-radius:10px;background:var(--panel2);border:1px solid var(--line);color:var(--text)}
+.feedback{margin-top:13px;padding:12px;border-radius:10px;background:var(--panel2);color:var(--muted)}.feedback.good{color:var(--green)}.feedback.bad{color:var(--red)}
+.stats{display:grid;grid-template-columns:1fr 1fr;gap:10px}.stat{padding:14px;background:var(--panel2);border-radius:12px}.stat strong{font-size:24px;display:block}.stat span{font-size:12px;color:var(--muted)}
+.row{display:flex;justify-content:space-between;align-items:center;gap:10px}.switch{display:flex;gap:7px;background:var(--panel2);padding:4px;border-radius:11px}.switch button{padding:8px 10px;border-radius:8px;background:transparent;color:var(--muted);font-size:12px}.switch button.on{background:#3a3350;color:white}
+select,input[type=file]{background:var(--panel2);color:var(--text);border:1px solid var(--line);padding:10px;border-radius:10px;max-width:100%}
+.panel{display:none}.panel.active{display:block}.full{grid-column:1/-1}.list{display:grid;gap:8px}.wordrow{display:flex;justify-content:space-between;gap:12px;padding:11px 12px;background:var(--panel2);border-radius:10px}.wordrow small{color:var(--muted)}
+.note{font-size:12px;color:var(--muted);margin-top:14px}.pickrow{display:flex;align-items:center;gap:10px;padding:10px 12px;background:var(--panel2);border-radius:10px}.pickrow input{accent-color:var(--accent);width:17px;height:17px}.pickrow label{display:flex;justify-content:space-between;gap:10px;flex:1;cursor:pointer}.hidden{display:none!important}
+
+.topic-home{margin:8px 0 24px}.topic-home h1{font-size:clamp(25px,5vw,34px);margin:0 0 8px}.topic-home p{color:var(--muted);margin:0 0 20px}.topic-grid{display:grid;grid-template-columns:repeat(3,minmax(0,1fr));gap:12px}.topic-card{background:var(--panel);border:1px solid var(--line);border-radius:16px;padding:17px;text-align:left;color:var(--text);min-height:116px;transition:.15s}.topic-card:hover{border-color:var(--accent);transform:translateY(-1px)}.topic-card .emoji{font-size:25px;display:block;margin-bottom:9px}.topic-card b{display:block;font-size:15px}.topic-card small{display:block;color:var(--muted);margin-top:4px;font-size:12px}.topic-card.custom{border-style:dashed}.home-actions{display:flex;gap:10px;flex-wrap:wrap;margin-top:14px}.tabs.hidden{display:none!important}
+@media(max-width:720px){.topic-grid{grid-template-columns:repeat(2,minmax(0,1fr))}.topic-card{min-height:105px;padding:14px}}
+@media(max-width:720px){.grid{grid-template-columns:1fr}.answers{grid-template-columns:1fr}.card{padding:17px}.app{padding:16px 13px 35px}.stats{grid-template-columns:1fr 1fr}}
+</style></head>
+<body><div class="app">
+<header><div class="brand"><div class="logo">Q</div><div>QAZAQ <span style="color:var(--accent)">/</span> ТІЛІ</div></div><button class="secondary" id="changeTopic">Выбрать тему</button></header>
+<section id="topicHome" class="topic-home">
+<h1>Что будем изучать?</h1>
+<p>Выбери часть речи или собери собственный список слов.</p>
+<div class="topic-grid">
+<button class="topic-card" data-part="nouns"><span class="emoji">📚</span><b>Существительные</b><small id="count-nouns">Слова и предметы</small></button>
+<button class="topic-card" data-part="verbs"><span class="emoji">🏃</span><b>Глаголы</b><small id="count-verbs">Действия</small></button>
+<button class="topic-card" data-part="adjectives"><span class="emoji">🎨</span><b>Прилагательные</b><small id="count-adjectives">Признаки и качества</small></button>
+<button class="topic-card" data-part="numbers"><span class="emoji">🔢</span><b>Числительные</b><small id="count-numbers">Числа</small></button>
+<button class="topic-card" data-part="adverbs"><span class="emoji">⚡</span><b>Наречия</b><small id="count-adverbs">Время и образ действия</small></button>
+<button class="topic-card custom" data-part="custom"><span class="emoji">🧩</span><b>Своя подборка</b><small>Выбрать конкретные слова</small></button>
+</div>
+<div class="home-actions"><button class="secondary" data-part="all">Изучать все слова</button></div>
+</section>
+<nav class="tabs hidden">
+<button class="tab active" data-tab="learn">Обучение</button><button class="tab" data-tab="words">Словарь</button><button class="tab" data-tab="selection">Подбор слов</button><button class="tab" data-tab="mistakes">Ошибки</button><button class="tab" data-tab="learned">Выученные</button><button class="tab" data-tab="progress">Прогресс</button>
+</nav>
+<section id="learn" class="panel">
+<div class="grid">
+<div class="card">
+<div class="topline"><span id="modeLabel">Қазақша → Русский</span><span id="counter">Вопрос 1</span></div><div class="bar"><span id="progressBar"></span></div>
+<div class="row" style="flex-wrap:wrap"><span class="muted" style="font-size:12px">Выбери правильный перевод</span><div class="switch"><button id="kzru" class="on">KZ → RU</button><button id="rukz">RU → KZ</button></div></div><div class="row" style="margin-top:10px;flex-wrap:wrap"><span class="muted" style="font-size:12px">Формат ответа</span><div class="switch"><button id="multipleMode" class="on">Варианты</button><button id="typingMode">Писать ответ</button></div></div>
+<div class="word"><div class="main" id="question">Сәлем</div><div class="hint" id="subhint">Переведи слово на русский</div></div>
+<div class="answers" id="answers"></div><div id="typingArea" class="hidden"><input id="typedAnswer" autocomplete="off" placeholder="Напиши перевод…" style="width:100%;padding:15px;margin-top:4px"></div><div id="feedback" class="feedback hidden"></div>
+<button id="next" class="action" disabled>Проверить ответ</button>
+<div class="note">Подсказка: выбери вариант или напиши перевод, затем нажми «Проверить ответ». После проверки нажми «Следующее слово».</div>
+</div>
+<aside class="card">
+<h2>Твоя статистика</h2><div class="stats">
+<div class="stat"><strong id="total">0</strong><span>Ответов</span></div><div class="stat"><strong id="accuracy">0%</strong><span>Точность</span></div>
+<div class="stat"><strong id="known">0</strong><span>Верных ответов</span></div><div class="stat"><strong id="streak">0</strong><span>Серия правильных</span></div>
+</div><h2 style="margin-top:22px">Настройки</h2>
+<label class="muted" for="category" style="font-size:13px">Тема слов</label><br><select id="category" style="width:100%;margin-top:7px"><option value="all">Все темы</option></select>
+<p class="note" id="studyStatus">Прогресс сохраняется автоматически на этом устройстве.</p>
+</aside>
+</div></section>
+<section id="words" class="panel"><div class="card"><div class="row"><h2>Словарь</h2><span class="pill" id="wordCount">0 слов</span></div><input id="search" placeholder="Найти слово или перевод…" style="width:100%;margin-bottom:14px"><div id="wordList" class="list"></div><hr style="border-color:var(--line);margin:20px 0"><h2>Добавить свои слова</h2><p class="muted">Импортируй CSV-файл в формате: <code>казахское слово;русский перевод;тема</code>. Так можно расширить словарь до 1000+ слов.</p><input type="file" id="csv" accept=".csv,.txt"><p class="note">Импортированные слова сохранятся в браузере. Используй UTF-8.</p></div></section>
+<section id="selection" class="panel"><div class="card"><div class="row"><h2>Собственная подборка</h2><span class="pill" id="selectedCount">0 выбрано</span></div><p class="muted">Отметь конкретные слова, которые хочешь выучить. Затем нажми «Учить выбранные».</p><input id="selectSearch" placeholder="Поиск по словам…" style="width:100%;margin-bottom:12px"><div class="row" style="margin-bottom:12px;flex-wrap:wrap"><button class="secondary" id="selectAll">Выбрать всё в списке</button><button class="secondary" id="clearSelected">Снять выбор</button></div><div id="selectWordList" class="list"></div><button class="action" id="startSelected">Учить выбранные слова</button><p class="note">Можно выбрать слова из разных тем. Активная подборка будет использоваться в тренировке, пока не нажмёшь «Сбросить подборку».</p><button class="secondary" id="stopSelected">Сбросить подборку</button></div></section>\n<section id="mistakes" class="panel"><div class="card"><h2>Слова для повторения</h2><p class="muted">Здесь появляются слова, в которых ты ошибался.</p><div id="mistakeList" class="list"></div><button class="secondary" id="clearMistakes" style="margin-top:15px">Очистить список ошибок</button></div></section>
+<section id="learned" class="panel"><div class="card"><div class="row"><h2>Выученные слова</h2><span class="pill" id="learnedCount">0 слов</span></div><p class="muted">Слово попадает сюда после 10 правильных ответов подряд на него. Если ошибёшься, серия этого слова начнётся заново.</p><div id="learnedList" class="list"></div><button class="secondary" id="returnLearned" style="margin-top:15px">Вернуть все слова в изучение</button></div></section>
+<section id="progress" class="panel"><div class="card"><h2>Твой прогресс</h2><div class="stats"><div class="stat"><strong id="pTotal">0</strong><span>Всего ответов</span></div><div class="stat"><strong id="pAcc">0%</strong><span>Правильных</span></div><div class="stat"><strong id="pWords">0</strong><span>Слов в словаре</span></div><div class="stat"><strong id="pMistakes">0</strong><span>Слов в ошибках</span></div></div><p class="note">Данные хранятся локально в браузере. При очистке данных браузера прогресс может удалиться.</p><button class="secondary" id="reset" style="margin-top:12px">Сбросить прогресс</button></div></section>
+</div>
+<script>
+const seed = [
+["сәлем","привет","Приветствия"],["сау бол","до свидания","Приветствия"],["рақмет","спасибо","Приветствия"],["өтінемін","пожалуйста","Приветствия"],["кешіріңіз","извините","Приветствия"],["иә","да","Основы"],["жоқ","нет","Основы"],["жақсы","хорошо","Основы"],["жаман","плохо","Основы"],["бүгін","сегодня","Время"],["ертең","завтра","Время"],["кеше","вчера","Время"],["қазір","сейчас","Время"],["таң","утро","Время"],["түн","ночь","Время"],["күн","день; солнце","Природа"],["апта","неделя","Время"],["ай","месяц; луна","Время"],["жыл","год","Время"],["сағат","час; часы","Время"],
+["адам","человек","Люди"],["бала","ребёнок","Люди"],["дос","друг","Люди"],["отбасы","семья","Люди"],["ана","мама","Люди"],["әке","папа","Люди"],["аға","старший брат","Люди"],["әпке","старшая сестра","Люди"],["іні","младший брат","Люди"],["сіңлі","младшая сестра (для девушки)","Люди"],["мұғалім","учитель","Люди"],["оқушы","ученик","Люди"],["дәрігер","врач","Люди"],["жұмысшы","рабочий","Люди"],["көрші","сосед","Люди"],
+["үй","дом","Дом"],["мектеп","школа","Учёба"],["университет","университет","Учёба"],["кітап","книга","Учёба"],["дәптер","тетрадь","Учёба"],["қалам","ручка","Учёба"],["қарындаш","карандаш","Учёба"],["үстел","стол","Дом"],["орындық","стул","Дом"],["есік","дверь","Дом"],["терезе","окно","Дом"],["бөлме","комната","Дом"],["асүй","кухня","Дом"],["көше","улица","Город"],["қала","город","Город"],["ауыл","село","Город"],["дүкен","магазин","Город"],["аурухана","больница","Город"],
+["су","вода","Еда"],["нан","хлеб","Еда"],["сүт","молоко","Еда"],["ет","мясо","Еда"],["балық","рыба","Еда"],["алма","яблоко","Еда"],["алмұрт","груша","Еда"],["жүзім","виноград","Еда"],["картоп","картофель","Еда"],["сәбіз","морковь","Еда"],["пияз","лук","Еда"],["шай","чай","Еда"],["қант","сахар","Еда"],["тұз","соль","Еда"],["тамақ","еда; пища","Еда"],
+["үлкен","большой","Прилагательные"],["кіші","маленький","Прилагательные"],["ұзын","длинный","Прилагательные"],["қысқа","короткий","Прилагательные"],["жаңа","новый","Прилагательные"],["ескі","старый","Прилагательные"],["әдемі","красивый","Прилагательные"],["жылдам","быстрый","Прилагательные"],["баяу","медленный","Прилагательные"],["ыстық","горячий","Прилагательные"],["суық","холодный","Прилагательные"],["ақ","белый","Цвета"],["қара","чёрный","Цвета"],["қызыл","красный","Цвета"],["көк","синий; голубой","Цвета"],["жасыл","зелёный","Цвета"],["сары","жёлтый","Цвета"],["сұр","серый","Цвета"],["қоңыр","коричневый","Цвета"],
+["бару","идти; ехать","Глаголы"],["келу","приходить; приезжать","Глаголы"],["көру","видеть; смотреть","Глаголы"],["есту","слышать","Глаголы"],["сөйлеу","говорить","Глаголы"],["оқу","читать; учиться","Глаголы"],["жазу","писать","Глаголы"],["жүру","ходить","Глаголы"],["отыру","сидеть","Глаголы"],["тұру","стоять; вставать","Глаголы"],["ішу","пить","Глаголы"],["жеу","есть","Глаголы"],["ұйықтау","спать","Глаголы"],["жұмыс істеу","работать","Глаголы"],["ойлау","думать","Глаголы"],["білу","знать","Глаголы"],["түсіну","понимать","Глаголы"],["сүю","любить","Глаголы"],["күту","ждать","Глаголы"],["сатып алу","покупать","Глаголы"],
+["бас","голова","Тело"],["көз","глаз","Тело"],["құлақ","ухо","Тело"],["мұрын","нос","Тело"],["ауыз","рот","Тело"],["қол","рука","Тело"],["аяқ","нога","Тело"],["жүрек","сердце","Тело"],["шаш","волосы","Тело"],["тіс","зуб","Тело"],
+["бір","один","Числа"],["екі","два","Числа"],["үш","три","Числа"],["төрт","четыре","Числа"],["бес","пять","Числа"],["алты","шесть","Числа"],["жеті","семь","Числа"],["сегіз","восемь","Числа"],["тоғыз","девять","Числа"],["он","десять","Числа"],
+["жаңбыр","дождь","Природа"],["қар","снег","Природа"],["жел","ветер","Природа"],["аспан","небо","Природа"],["жер","земля","Природа"],["тау","гора","Природа"],["өзен","река","Природа"],["көл","озеро","Природа"],["ағаш","дерево","Природа"],["гүл","цветок","Природа"],
+["ақша","деньги","Быт"],["баға","цена","Быт"],["уақыт","время","Быт"],["сұрақ","вопрос","Учёба"],["жауап","ответ","Учёба"],["тіл","язык","Учёба"],["сөз","слово","Учёба"],["Қазақстан","Казахстан","География"],["қазақ","казах","География"],["орыс","русский","География"]
+];
+const KEY='qazaqTrainerV1';let saved={};try{saved=JSON.parse(localStorage.getItem(KEY)||'{}')}catch(e){}
+let words=[...seed];if(Array.isArray(saved.extra))words.push(...saved.extra);let direction=saved.direction||'kzru',current=null,chosen=-1,checked=false,session=0,sessionCorrect=0;let answerMode=saved.answerMode||'multiple',selectedWords=new Set(saved.selectedWords||[]),studySelectionActive=!!saved.studySelectionActive;
+let wordStreaks=saved.wordStreaks&&typeof saved.wordStreaks==='object'?saved.wordStreaks:{};let learnedWords=new Set(saved.learnedWords||[]);
+let stats=saved.stats||{total:0,correct:0,streak:0};let mistakes=saved.mistakes||[];
+const $=id=>document.getElementById(id);
+function persist(){localStorage.setItem(KEY,JSON.stringify({extra:words.slice(seed.length),direction,stats,mistakes,answerMode,selectedWords:[...selectedWords],studySelectionActive,wordStreaks,learnedWords:[...learnedWords]}))}
+function esc(s){return String(s).replace(/[&<>"']/g,c=>({'&':'&amp;','<':'&lt;','>':'&gt;','"':'&quot;',"'":'&#39;'}[c]))}
+function display(w,side){return side==='kzru'?w[0]:w[1]}
+function uniqueOptions(correct){let pool=words.filter(w=>w!==correct).map(w=>display(w,direction==='kzru'?'rukz':'kzru'));let opts=[display(correct,direction==='kzru'?'rukz':'kzru')];while(opts.length<4&&pool.length){let i=Math.floor(Math.random()*pool.length),v=pool.splice(i,1)[0];if(!opts.includes(v))opts.push(v)}return opts.sort(()=>Math.random()-.5)}
+let activePart='all';
+const partWords={
+ verbs:new Set(['бару','келу','көру','есту','сөйлеу','оқу','жазу','жүру','отыру','тұру','ішу','жеу','ұйықтау','жұмыс істеу','ойлау','білу','түсіну','сүю','күту','сатып алу']),
+ adjectives:new Set(['жақсы','жаман','үлкен','кіші','ұзын','қысқа','жаңа','ескі','әдемі','жылдам','ыстық','суық','ақ','қара','қызыл','көк','жасыл','сары','сұр','қоңыр']),
+ numbers:new Set(['бір','екі','үш','төрт','бес','алты','жеті','сегіз','тоғыз','он']),
+ adverbs:new Set(['бүгін','ертең','кеше','қазір','тез','баяу'])
+};
+const nounTopics=new Set(['Люди','Дом','Учёба','Город','Еда','Тело','Природа','Быт','География','Время']);
+function wordPart(w){let key=w[0].toLocaleLowerCase('kk');for(const [part,set] of Object.entries(partWords))if(set.has(key))return part;if(nounTopics.has(w[2]))return 'nouns';return 'other'}
+function partCount(part){return words.filter(w=>!learnedWords.has(w[0])&&(part==='all'||wordPart(w)===part)).length}
+function updateTopicCounts(){for(const part of ['nouns','verbs','adjectives','numbers','adverbs']){let el=$('count-'+part);if(el)el.textContent=partCount(part)+' слов'} }
+function choosePart(part){
+ if(part==='custom'){
+  document.querySelectorAll('.tab,.panel').forEach(x=>x.classList.remove('active'));
+  $('selection').classList.add('active');document.querySelector('.tabs').classList.remove('hidden');
+  document.querySelectorAll('.tab').forEach(x=>x.classList.toggle('active',x.dataset.tab==='selection'));
+  $('topicHome').classList.add('hidden');return;
+ }
+ activePart=part;studySelectionActive=false;persist();$('category').value='all';
+ $('topicHome').classList.add('hidden');document.querySelector('.tabs').classList.remove('hidden');
+ document.querySelectorAll('.tab,.panel').forEach(x=>x.classList.remove('active'));
+ document.querySelector('[data-tab="learn"]').classList.add('active');$('learn').classList.add('active');newQuestion();
+}
+document.querySelectorAll('[data-part]').forEach(b=>b.addEventListener('click',()=>choosePart(b.dataset.part)));
+function filtered(){let base=studySelectionActive?words.filter(w=>selectedWords.has(w[0])&&!learnedWords.has(w[0])):words.filter(w=>!learnedWords.has(w[0]));if(!studySelectionActive&&activePart!=='all')base=base.filter(w=>wordPart(w)===activePart);let c=$('category').value;return c==='all'?base:base.filter(w=>w[2]===c)}
+function newQuestion(){let pool=filtered();if(pool.length===0){$('question').textContent='В этой категории пока нет слов';$('subhint').textContent='Выбери другую категорию';$('answers').innerHTML='';$('typingArea').classList.add('hidden');$('next').disabled=true;return}if(pool.length<4&&answerMode==='multiple'){$('question').textContent='Недостаточно слов';$('subhint').textContent='Для вариантов нужно минимум 4 слова. Переключись на «Писать ответ».';$('answers').innerHTML='';$('typingArea').classList.add('hidden');$('next').disabled=true;return}current=pool[Math.floor(Math.random()*pool.length)];chosen=-1;checked=false;$('feedback').classList.add('hidden');$('next').textContent='Проверить ответ';$('next').disabled=true;$('counter').textContent='Вопрос '+(session+1);$('progressBar').style.width=(session%10+1)*10+'%';$('question').textContent=display(current,direction);$('subhint').textContent=direction==='kzru'?'Переведи слово на русский':'Переведи слово на казахский';let opts=uniqueOptions(current);current.options=opts;$('answers').innerHTML='';$('typedAnswer').value='';$('answers').classList.toggle('hidden',answerMode==='typing');$('typingArea').classList.toggle('hidden',answerMode!=='typing');if(answerMode==='multiple'){opts.forEach((v,i)=>{let b=document.createElement('button');b.className='answer';b.textContent=v;b.onclick=()=>{if(checked)return;chosen=i;[...$('answers').children].forEach(x=>x.classList.remove('chosen'));b.classList.add('chosen');$('next').disabled=false};$('answers').appendChild(b)})}else{$('typedAnswer').oninput=()=>{$('next').disabled=!$('typedAnswer').value.trim()};$('typedAnswer').onkeydown=e=>{if(e.key==='Enter'&&!$('next').disabled)submit()}}}
+function submit(){if(!checked){if(answerMode==='multiple'&&chosen<0)return;if(answerMode==='typing'&&!$('typedAnswer').value.trim())return;checked=true;let correct=display(current,direction==='kzru'?'rukz':'kzru');let answer=answerMode==='typing'?$('typedAnswer').value.trim():current.options[chosen];let normalize=s=>String(s).toLocaleLowerCase('ru').replace(/[.,!?;:]/g,'').replace(/\s+/g,' ').trim();let accepted=correct.split(/[;\/]/).map(x=>normalize(x));let ok=accepted.includes(normalize(answer));stats.total++;if(ok){stats.correct++;stats.streak++;sessionCorrect++;wordStreaks[current[0]]=(wordStreaks[current[0]]||0)+1;if(wordStreaks[current[0]]>=10){learnedWords.add(current[0]);delete wordStreaks[current[0]]}}else{stats.streak=0;wordStreaks[current[0]]=0;if(!mistakes.some(x=>x[0]===current[0]))mistakes.push(current)}let fb=$('feedback');fb.classList.remove('hidden','good','bad');fb.classList.add(ok?'good':'bad');fb.textContent=ok?(learnedWords.has(current[0])?'Верно! Слово выучено — 10 правильных ответов подряд.':'Верно! Серия по этому слову: '+(wordStreaks[current[0]]||0)+'/10'):'Не совсем. Правильный ответ: '+correct;[...$('answers').children].forEach((b,i)=>{b.disabled=true;if(accepted.includes(normalize(current.options[i])))b.classList.add('correct');else if(i===chosen)b.classList.add('wrong')});$('next').textContent='Следующее слово';persist();renderStats();renderMistakes();renderLearned()}else{session++;newQuestion()}}
+function renderStats(){$('studyStatus').textContent=studySelectionActive?'Активна подборка: '+selectedWords.size+' слов.':'Прогресс сохраняется автоматически на этом устройстве.';let acc=stats.total?Math.round(stats.correct/stats.total*100):0;$('total').textContent=stats.total;$('accuracy').textContent=acc+'%';$('known').textContent=stats.correct;$('streak').textContent=stats.streak;$('pTotal').textContent=stats.total;$('pAcc').textContent=acc+'%';$('pWords').textContent=words.length;$('pMistakes').textContent=mistakes.length;$('wordCount').textContent=words.length+' слов'}
+function renderCategories(){let cats=[...new Set(words.map(w=>w[2]))].sort();$('category').innerHTML='<option value="all">Все темы</option>'+cats.map(c=>`<option value="${esc(c)}">${esc(c)}</option>`).join('')}
+function renderWords(){let q=$('search').value.toLowerCase();let found=words.filter(w=>w.join(' ').toLowerCase().includes(q));$('wordList').innerHTML=found.slice(0,250).map(w=>`<div class="wordrow"><div><b>${esc(w[0])}</b><br><small>${esc(w[2])}</small></div><div style="text-align:right">${esc(w[1])}</div></div>`).join('')||'<p class="muted">Ничего не найдено.</p>'}
+function renderSelection(){let q=$('selectSearch').value.toLowerCase();let found=words.filter(w=>w.join(' ').toLowerCase().includes(q));$('selectWordList').innerHTML=found.slice(0,400).map(w=>{let isChecked=selectedWords.has(w[0])?'checked':'';return `<div class="pickrow"><input type="checkbox" data-word="${esc(w[0])}" ${isChecked}><label><span><b>${esc(w[0])}</b><br><small class="muted">${esc(w[2])}</small></span><span>${esc(w[1])}</span></label></div>`}).join('')||'<p class="muted">Ничего не найдено.</p>';document.querySelectorAll('#selectWordList input').forEach(box=>box.onchange=()=>{let word=box.dataset.word;if(box.checked)selectedWords.add(word);else selectedWords.delete(word);$('selectedCount').textContent=selectedWords.size+' выбрано';persist()});$('selectedCount').textContent=selectedWords.size+' выбрано'}
+function setAnswerMode(mode){answerMode=mode;$('multipleMode').classList.toggle('on',mode==='multiple');$('typingMode').classList.toggle('on',mode==='typing');persist();newQuestion()}
+function renderMistakes(){$('mistakeList').innerHTML=mistakes.map(w=>`<div class="wordrow"><b>${esc(w[0])}</b><span>${esc(w[1])}</span></div>`).join('')||'<p class="muted">Пока ошибок нет — продолжай!</p>'}
+function renderLearned(){$('learnedCount').textContent=learnedWords.size+' слов';let list=words.filter(w=>learnedWords.has(w[0]));$('learnedList').innerHTML=list.map(w=>`<div class="wordrow"><div><b>${esc(w[0])}</b><br><small>${esc(w[2])}</small></div><span>${esc(w[1])}</span></div>`).join('')||'<p class="muted">Пока нет выученных слов. Продолжай тренировку!</p>';updateTopicCounts()}
+document.querySelectorAll('.tab').forEach(b=>b.onclick=()=>{document.querySelectorAll('.tab,.panel').forEach(x=>x.classList.remove('active'));b.classList.add('active');$(b.dataset.tab).classList.add('active');if(b.dataset.tab==='words')renderWords()});
+$('changeTopic').onclick=()=>{$('topicHome').classList.remove('hidden');document.querySelector('.tabs').classList.add('hidden');document.querySelectorAll('.tab,.panel').forEach(x=>x.classList.remove('active'));activePart='all';studySelectionActive=false;persist();updateTopicCounts()};
+$('kzru').onclick=()=>setDirection('kzru');$('rukz').onclick=()=>setDirection('rukz');
+function setDirection(d){direction=d;$('kzru').classList.toggle('on',d==='kzru');$('rukz').classList.toggle('on',d==='rukz');$('modeLabel').textContent=d==='kzru'?'Қазақша → Русский':'Русский → Қазақша';persist();newQuestion()}
+$('next').onclick=submit;$('category').onchange=newQuestion;$('search').oninput=renderWords;
+$('clearMistakes').onclick=()=>{mistakes=[];persist();renderMistakes();renderStats()};
+$('returnLearned').onclick=()=>{learnedWords.clear();wordStreaks={};persist();renderLearned();renderStats();newQuestion()};
+$('reset').onclick=()=>{if(confirm('Сбросить статистику, серии слов, выученные слова и список ошибок?')){stats={total:0,correct:0,streak:0};mistakes=[];wordStreaks={};learnedWords.clear();persist();renderStats();renderMistakes();renderLearned();newQuestion()}};
+$('csv').onchange=async e=>{let f=e.target.files[0];if(!f)return;let txt=await f.text(),rows=txt.split(/\r?\n/).filter(Boolean),added=0;for(let line of rows){let p=line.split(/[;\t,]/).map(x=>x.trim().replace(/^"|"$/g,''));if(p.length>=2&&p[0]&&p[1]&&!/казах|қазақ|russian|русский/i.test(p[0])){let item=[p[0],p[1],p[2]||'Импорт'];if(!words.some(w=>w[0].toLowerCase()===item[0].toLowerCase())){words.push(item);added++}}}persist();renderCategories();renderStats();renderWords();updateTopicCounts();alert('Добавлено слов: '+added);e.target.value=''};
+$('multipleMode').onclick=()=>setAnswerMode('multiple');$('typingMode').onclick=()=>setAnswerMode('typing');
+$('selectSearch').oninput=renderSelection;
+$('selectAll').onclick=()=>{words.forEach(w=>selectedWords.add(w[0]));persist();renderSelection()};
+$('clearSelected').onclick=()=>{selectedWords.clear();persist();renderSelection()};
+$('startSelected').onclick=()=>{if(!selectedWords.size){alert('Сначала отметь хотя бы одно слово.');return}studySelectionActive=true;activePart='all';persist();$('category').value='all';$('topicHome').classList.add('hidden');document.querySelector('.tabs').classList.remove('hidden');document.querySelectorAll('.tab,.panel').forEach(x=>x.classList.remove('active'));document.querySelector('[data-tab="learn"]').classList.add('active');$('learn').classList.add('active');newQuestion()};
+$('stopSelected').onclick=()=>{studySelectionActive=false;activePart='all';persist();newQuestion();alert('Подборка отключена. Теперь тренируешь весь словарь или выбранную тему.')};
+$('category').onchange=newQuestion;
+renderCategories();renderStats();renderMistakes();renderLearned();renderSelection();updateTopicCounts();$('multipleMode').classList.toggle('on',answerMode==='multiple');$('typingMode').classList.toggle('on',answerMode==='typing');newQuestion();
+if("serviceWorker" in navigator){window.addEventListener("load",()=>navigator.serviceWorker.register("./sw.js").catch(()=>{}));}
+</script></body></html>
